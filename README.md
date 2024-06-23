@@ -13,3 +13,4 @@ Developement workflow:
 4. Develope and test changes by locally testing the azure functions with azure functions core tools + VScode
 5. Delete the local testing logic from the function after it is confirmed to be working
 6. Push the new function to the test branch of the repository and create the new function in azure
+7. Iterate as new features are added
