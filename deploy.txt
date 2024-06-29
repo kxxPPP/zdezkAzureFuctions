@@ -1,14 +1,39 @@
-File structure:
+General idea for single function testing:
 
-1. Copy a function from the nakedFunctions folder and paste is to desktop
-2. Rename the function 
+The Test function app serves the purpose of testing singular functions. It can be overwritten
+continuously.
+
+1. Copy a function from the nakedFunctions folder and paste it to desktop
+2. Rename the function folder
 3. Move the new function back to the nakedFunctions folder
 4. Edit the function and save the final code and files in the nakedFunctions folder
 5. Create a copy of the new function and move it to the desktop 
-6. Open the folder and deploy the function from that folder in vscode
+6. Open the folder and deploy the function from that folder in vscode TO THE TEST FUNCTION APP
 7. Delete the desktop folder once it has been uploaded to azure
 
-Function Deployment
+IMPORTANT:
+
+Deployment will overwrite your entire function app. The only way to maintain all functions is to
+Keep them in the same directory.
+
+Therefore a copy of all the naked funcitons without the VScode VENV trash should be kept in a 
+sepperate local folder and have their own repository in github.
+
+THE GITHUB NAKED FUNCTION FOLDER AND THE DEPLOYMENT FOLDER ARE NOT THE SAME. THE DEPLOYMENT FOLDER
+SHOULD BE A TEMP COPY OF THE NAKED FUNCTION FOLDER
+
+To do this:
+
+Multiple Function Deployment (to the production fuinction app):
+
+0. Preform test deplyment stated above in the Test function app 
+1. Copy the naked functions from the nakedFunctions folder that is saved via github into another folder
+2. Open the parent folder in vscode
+3. Ctrl + Shift + P -  Azure FUnctions: Deploy to Function App
+4. Check in the azure module of VSCode that the function is present after the deployment
+5. Delete the parent folder used to deploy the functions
+
+Single Function Deployment
 
 1. Write script and all function dependencies and files
 2. Save them in the proper folder structure
@@ -21,4 +46,5 @@ Pushing to website:
 
 1. Make and deploy test function to test function app
 2. Test function functionality
-3. Overwrite the function in the production funciton app 
+3. Add to the nakedFunction folder duplicate the folder and deploy the duplicate 
+4. Adjust the html to accomidate the new function.
