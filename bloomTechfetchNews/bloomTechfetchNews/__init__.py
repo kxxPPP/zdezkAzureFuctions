@@ -1,6 +1,7 @@
 import logging
 import requests
 from bs4 import BeautifulSoup
+import re
 import azure.functions as func
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
@@ -11,9 +12,10 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         response_message = format_headlines_as_text(headlines)
         return func.HttpResponse(response_message, status_code=200)
     except Exception as e:
+        logging.error(f"An error occurred: {str(e)}")
         return func.HttpResponse(
-             f"An error occurred: {str(e)}",
-             status_code=500
+            f"An error occurred: {str(e)}",
+            status_code=500
         )
 
 def fetch_news_headlines():
@@ -26,24 +28,27 @@ def fetch_news_headlines():
         "Cache-Control": "max-age=0"
     }
 
-    base_url = 'https://www.zerohedge.com'
+    base_url = 'https://www.bloomberg.com/technology'
     response = requests.get(base_url, headers=headers)
     soup = BeautifulSoup(response.content, 'html.parser')
-    a_tags = soup.find_all('a', href=True)
-    headlines = []
-    categories = ['/markets', '/geopolitical', '/medical', '/political', '/military', '/commodities', '/economics', '/technology', '/energy', '/environment', '/health']
-    
-    for tag in a_tags:
-        href = tag['href']
-        if any(category in href for category in categories):
-            raw_text = tag.get_text(strip=True).replace(u'\xa0', u' ')
-            cleaned_text = ' '.join(word for word in raw_text.split() if not (word.isdigit() and len(word) == 1))
-            if cleaned_text:
-                full_url = base_url + href
-                headlines.append((cleaned_text, full_url))
 
-    return headlines
+    main_section = soup.find('section', class_='zone_zone__7Ypxu zone_righty__eeKbc')
+    
+    for excluded_section in main_section.find_all('section', class_='zone_right-rail__9g5Ro'):
+        excluded_section.decompose()
+
+    links = main_section.find_all('a', href=True)
+    
+    headlines_seen = set()
+    headlines_data = []
+    for link in links:
+        url = 'https://www.bloomberg.com' + link['href']
+        text = re.sub(r'^\d+\.\s+', '', link.get_text(strip=True))
+        if text and len(text) > 20 and url not in headlines_seen:
+            headlines_seen.add(url)
+            headlines_data.append((text, url))
+
+    return headlines_data
 
 def format_headlines_as_text(headlines):
     return "\n\n".join(f"{headline}\n{url}" for headline, url in headlines)
-
