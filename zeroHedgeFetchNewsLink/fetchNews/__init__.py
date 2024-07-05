@@ -42,15 +42,10 @@ def fetch_news_headlines():
             cleaned_text = ' '.join(word for word in raw_text.split() if not (word.isdigit() and len(word) == 1))
             if cleaned_text:
                 full_url = base_url + href
-                headlines.append((cleaned_text, full_url))
+                headlines.append(f'<a href="{full_url}">{cleaned_text}</a>')
 
     return headlines
 
 def format_headlines_as_html(headlines):
-    html_content = "<html><body>"
-    for headline, url in headlines:
-        html_content += f"<p><a href='{url}'>{headline}</a></p>"
-    html_content += "</body></html>"
+    html_content = "<br><br>".join(headlines)
     return html_content
-
-
